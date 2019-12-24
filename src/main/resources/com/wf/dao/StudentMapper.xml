@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wf.dao.StudentMapper">
+    <insert id="saveStudent" parameterType="com.wf.domain.Student">
+        <selectKey resultType="int" keyColumn="id" keyProperty="id" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into student(sNumber,name,age, sex, class, grade, profession, academy, tName, phone,email,birthday,location)
+        values(#{sNumber}, #{name}, #{age}, #{sex}, #{classes}, #{grade}, #{profession}, #{academy}, #{tName}, #{phone},#{email},#{birthday},#{location});
+    </insert>
+
+    <delete id="deleteStudentByName" parameterType="String">
+        delete from student where name = #{name};
+    </delete>
+
+    <update id="updateStudentByName" parameterType="com.wf.domain.Student">
+        update student set location=#{location} where name=#{name};
+    </update>
+
+    <select id="getStudentById" parameterType="Integer" resultType="com.wf.domain.Student">
+        select * from student where id = #{id};
+    </select>
+
+    <select id="getStudentCount" resultType="Integer">
+        select count(id) from student;
+    </select>
+
+</mapper>
