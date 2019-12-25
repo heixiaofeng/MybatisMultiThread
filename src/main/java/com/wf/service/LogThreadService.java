@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Deque;
+import java.util.concurrent.*;
 
 public class LogThreadService implements Runnable{
 
@@ -17,25 +18,53 @@ public class LogThreadService implements Runnable{
 
     @Override
     public void run() {
-        Deque<Long> deque = dmlTime.getDeque();
-        System.out.println("deque isEmpty:"+deque.isEmpty());
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<Boolean> future = executorService.submit(new Caller(dmlTime));
+        try{
+            future.get(1, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            System.out.println("超时");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+//            executorService.shutdownNow();
+        }
+    }
+}
+
+/**
+ * 为了解决线程假死
+ */
+class Caller implements Callable<Boolean>{
+    private DMLTime dmlTime;
+
+    public Caller(DMLTime dmlTime){
+        this.dmlTime = dmlTime;
+    }
+
+    @Override
+    public Boolean call() throws Exception {
+        Deque<Double> deque = dmlTime.getDeque();
+        int size = deque.size();
+        System.out.println("日志线程总数量:"+ size);
         File file = new File("src/main/resources/file/logThread.txt");
         try {
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.createNewFile();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-            fileOutputStream.write((deque.size()+":").getBytes());
-            for (long time: deque) {
-//                System.out.println("日志文件单次操作时间："+time);
-                fileOutputStream.write(String.valueOf(time).getBytes());
+            fileOutputStream.write((size + ":").getBytes());
+            while(deque.peekFirst() != null) {
+                fileOutputStream.write(String.valueOf(deque.pollFirst()).getBytes());
                 fileOutputStream.write(" ".getBytes());
             }
             fileOutputStream.write("\n".getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
-        } catch (IOException e) {
+            return true;
+        }catch(Exception e){
             e.printStackTrace();
         }
+        return false;
     }
 }

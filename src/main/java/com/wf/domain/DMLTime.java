@@ -4,16 +4,16 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public class DMLTime {
-    private volatile Deque<Long> deque = new LinkedList<>();
+    private volatile Deque<Double> deque = new LinkedList<>();
 
     public DMLTime(){ }
 
-    public synchronized void addElement(long time){
+    public  void addElement(double time){
         deque.addLast(time);
     }
 
-    public synchronized Deque<Long> getDeque(){
-        Deque<Long> copyDeque = deque;
+    public  Deque<Double> getDeque(){
+        Deque<Double> copyDeque = deque;
         deque = new LinkedList<>();
         return copyDeque;
     }

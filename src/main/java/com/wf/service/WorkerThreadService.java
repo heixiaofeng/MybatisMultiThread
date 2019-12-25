@@ -8,12 +8,15 @@ import com.wf.utils.DBUtils;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class WorkerThreadService implements Runnable{
     SqlSession sqlSession;
     private DMLCount dmlCount;
     private DMLTime dmlTime;
     private Student student;
+    private Lock lock = new ReentrantLock();
 
 
     public WorkerThreadService(DMLCount dmlCount, DMLTime dmlTime){
@@ -38,21 +41,29 @@ public class WorkerThreadService implements Runnable{
 
     @Override
     public void run() {
-        while (dmlCount.getFlag()){
-            long startTime = System.currentTimeMillis();
-            sqlSession = DBUtils.getSession();
-            StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
-            studentMapper.saveStudent(student);
-            dmlCount.setCount();
-            if(dmlCount.getCount() == 200){
-                dmlCount.setFlag(false);
+        sqlSession = DBUtils.getSession();
+        StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+        while(true){
+            lock.lock();
+            try {
+                double startTime = System.currentTimeMillis();
+                //每秒插入次数
+                studentMapper.saveStudent(student);
+                sqlSession.commit();
+                dmlCount.addCount();
+                //单次操作时间
+                double endTime = System.currentTimeMillis();
+                double time = (endTime - startTime) / 1000;
+                dmlTime.addElement(time);
+                System.out.println("thread name:" + Thread.currentThread().getName() + ", count:" + dmlCount.getCount());
+                if(dmlCount.getCount() >= 1000)
+                    break;
+            } catch (Exception e){
+                e.printStackTrace();
             }
-            sqlSession.commit();
-            sqlSession.close();
-
-            long endTime = System.currentTimeMillis();
-            long time = (endTime-startTime)/1000;
-            dmlTime.addElement(time);
+            finally {
+                lock.unlock();
+            }
         }
     }
 }

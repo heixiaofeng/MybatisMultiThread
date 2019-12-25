@@ -1,24 +1,14 @@
 package com.wf.domain;
 
 public class DMLCount {
-    private int count;
-    private boolean flag;
+    private volatile int count = 0;
 
-    public DMLCount(int count, boolean flag){
-        this.count = count;
-        this.flag = flag;
-    }
+    public DMLCount(){ }
 
-    public synchronized void setFlag(boolean flag){
-        this.flag = flag;
-    }
-    public synchronized boolean getFlag(){
-        return flag;
-    }
-    public synchronized void setCount(){
+    public void addCount(){
         count ++;
     }
-    public synchronized int getCount(){
+    public int getCount(){
         return count;
     }
 }
