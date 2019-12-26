@@ -22,9 +22,10 @@ public class ThreadTest {
         scheduledExecutorService.scheduleAtFixedRate(new LogThreadService(dmlTime), 0, 1, TimeUnit.SECONDS);
         //启动统计线程
         scheduledExecutorService.scheduleAtFixedRate(new CountThreadService(dmlCount), 0, 1, TimeUnit.SECONDS);
-        //启动工作线程
-        for(int i = 0; i < 50; i ++){
-            executorService.execute(new WorkerThreadService(dmlCount, dmlTime));
+        //启动工作线程,同一个工作线程对象启动多次
+        WorkerThreadService workerThreadService = new WorkerThreadService(dmlCount, dmlTime);
+        for (int i = 0; i < 50; i++) {
+            executorService.execute(workerThreadService);
         }
 
         //关闭线程

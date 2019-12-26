@@ -4,7 +4,6 @@ import com.wf.domain.DMLTime;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Deque;
 import java.util.concurrent.*;
 
@@ -54,8 +53,8 @@ class Caller implements Callable<Boolean>{
             }
             FileOutputStream fileOutputStream = new FileOutputStream(file, true);
             fileOutputStream.write((size + ":").getBytes());
-            while(deque.peekFirst() != null) {
-                fileOutputStream.write(String.valueOf(deque.pollFirst()).getBytes());
+            for (double time : deque) {
+                fileOutputStream.write(String.valueOf(time).getBytes());
                 fileOutputStream.write(" ".getBytes());
             }
             fileOutputStream.write("\n".getBytes());

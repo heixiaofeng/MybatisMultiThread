@@ -46,6 +46,10 @@ public class WorkerThreadService implements Runnable{
         while(true){
             lock.lock();
             try {
+                //终止循环
+                System.out.println("thread name:" + Thread.currentThread().getName() + ", count:" + dmlCount.getCount());
+                if (dmlCount.getCount() == 1000)
+                    break;
                 double startTime = System.currentTimeMillis();
                 //每秒插入次数
                 studentMapper.saveStudent(student);
@@ -55,9 +59,6 @@ public class WorkerThreadService implements Runnable{
                 double endTime = System.currentTimeMillis();
                 double time = (endTime - startTime) / 1000;
                 dmlTime.addElement(time);
-                System.out.println("thread name:" + Thread.currentThread().getName() + ", count:" + dmlCount.getCount());
-                if(dmlCount.getCount() >= 1000)
-                    break;
             } catch (Exception e){
                 e.printStackTrace();
             }
