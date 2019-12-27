@@ -9,11 +9,11 @@ public class DMLTime {
 
     public DMLTime(){ }
 
-    public  void addElement(double time){
+    public synchronized void addElement(double time) {
         deque.addLast(time);
     }
 
-    public  Deque<Double> getDeque() {
+    public synchronized Deque<Double> getDeque() {
         Deque<Double> tempDeque;
         tempDeque = deque;
         deque = copyDeque;

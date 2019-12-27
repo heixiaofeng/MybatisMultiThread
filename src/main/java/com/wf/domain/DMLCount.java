@@ -5,10 +5,11 @@ public class DMLCount {
 
     public DMLCount(){ }
 
-    public void addCount(){
-        count ++;
+    public synchronized void addCount() {
+        count++;
     }
-    public int getCount(){
+
+    public synchronized int getCount() {
         return count;
     }
 }

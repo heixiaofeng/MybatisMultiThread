@@ -8,14 +8,11 @@ import com.wf.utils.DBUtils;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.Date;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class WorkerThreadService implements Runnable{
     private DMLCount dmlCount;
     private DMLTime dmlTime;
     private Student student;
-    private Lock lock = new ReentrantLock();
 
 
     public WorkerThreadService(DMLCount dmlCount, DMLTime dmlTime){
@@ -46,25 +43,15 @@ public class WorkerThreadService implements Runnable{
             double startTime = System.currentTimeMillis();
             //每秒插入次数
             studentMapper.saveStudent(student);
+            sqlSession.commit();
+            if (dmlCount.getCount() == 10000) {
+                break;
+            }
+            dmlCount.addCount();
             //单次操作时间
             double endTime = System.currentTimeMillis();
             double time = (endTime - startTime) / 1000;
-            lock.lock();
-            try {
-                //终止循环
-                System.out.println("thread name:" + Thread.currentThread().getName() + ", count:" + dmlCount.getCount());
-                if (dmlCount.getCount() == 100) {
-                    break;
-                }
-                sqlSession.commit();
-                dmlCount.addCount();
-                dmlTime.addElement(time);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            finally {
-                lock.unlock();
-            }
+            dmlTime.addElement(time);
         }
     }
 }

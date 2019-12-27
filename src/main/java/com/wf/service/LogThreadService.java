@@ -5,7 +5,6 @@ import com.wf.domain.DMLTime;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Deque;
-import java.util.concurrent.*;
 
 public class LogThreadService implements Runnable{
 
@@ -17,32 +16,6 @@ public class LogThreadService implements Runnable{
 
     @Override
     public void run() {
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        Future<Boolean> future = executorService.submit(new Caller(dmlTime));
-        try{
-            future.get(1, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            System.out.println("超时");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-//            executorService.shutdownNow();
-        }
-    }
-}
-
-/**
- * 为了解决线程假死
- */
-class Caller implements Callable<Boolean>{
-    private DMLTime dmlTime;
-
-    public Caller(DMLTime dmlTime){
-        this.dmlTime = dmlTime;
-    }
-
-    @Override
-    public Boolean call() {
         Deque<Double> deque = dmlTime.getDeque();
         int size = deque.size();
         System.out.println("日志线程总数量:" + size);
@@ -61,11 +34,9 @@ class Caller implements Callable<Boolean>{
                 fileOutputStream.write("\n".getBytes());
                 fileOutputStream.flush();
                 fileOutputStream.close();
-                return true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return false;
     }
 }

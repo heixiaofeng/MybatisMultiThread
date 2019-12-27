@@ -19,18 +19,15 @@ public class ThreadTest {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
         //启动日志线程
-        scheduledExecutorService.scheduleAtFixedRate(new LogThreadService(dmlTime), 0, 1, TimeUnit.SECONDS);
+        LogThreadService logThreadService = new LogThreadService(dmlTime);
+        scheduledExecutorService.scheduleAtFixedRate(logThreadService, 0, 2, TimeUnit.SECONDS);
         //启动统计线程
-        scheduledExecutorService.scheduleAtFixedRate(new CountThreadService(dmlCount), 0, 1, TimeUnit.SECONDS);
+        CountThreadService countThreadService = new CountThreadService(dmlCount);
+        scheduledExecutorService.scheduleAtFixedRate(countThreadService, 0, 1, TimeUnit.SECONDS);
         //启动工作线程,同一个工作线程对象启动多次
         WorkerThreadService workerThreadService = new WorkerThreadService(dmlCount, dmlTime);
         for (int i = 0; i < 50; i++) {
             executorService.execute(workerThreadService);
         }
-
-        //关闭线程
-//        executorService.shutdown();
-//        countScheduledExecutorService.shutdown();
-//        logScheduledExecutorService.shutdown();
     }
 }
