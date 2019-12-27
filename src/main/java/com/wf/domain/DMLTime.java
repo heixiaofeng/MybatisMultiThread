@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 public class DMLTime {
     private volatile Deque<Double> deque = new LinkedList<>();
+    private volatile Deque<Double> copyDeque = new LinkedList<>();
 
     public DMLTime(){ }
 
@@ -12,9 +13,12 @@ public class DMLTime {
         deque.addLast(time);
     }
 
-    public  Deque<Double> getDeque(){
-        Deque<Double> copyDeque = deque;
-        deque = new LinkedList<>();
+    public  Deque<Double> getDeque() {
+        Deque<Double> tempDeque;
+        tempDeque = deque;
+        deque = copyDeque;
+        copyDeque = tempDeque;
+        deque.clear();
         return copyDeque;
     }
 }

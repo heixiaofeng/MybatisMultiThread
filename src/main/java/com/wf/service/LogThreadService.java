@@ -42,27 +42,29 @@ class Caller implements Callable<Boolean>{
     }
 
     @Override
-    public Boolean call() throws Exception {
+    public Boolean call() {
         Deque<Double> deque = dmlTime.getDeque();
         int size = deque.size();
-        System.out.println("日志线程总数量:"+ size);
-        File file = new File("src/main/resources/file/logThread.txt");
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
+        System.out.println("日志线程总数量:" + size);
+        if (size > 0) {
+            File file = new File("src/main/resources/file/logThread.txt");
+            try {
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                FileOutputStream fileOutputStream = new FileOutputStream(file, true);
+                fileOutputStream.write((size + ":").getBytes());
+                for (double time : deque) {
+                    fileOutputStream.write(String.valueOf(time).getBytes());
+                    fileOutputStream.write(" ".getBytes());
+                }
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.flush();
+                fileOutputStream.close();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-            fileOutputStream.write((size + ":").getBytes());
-            for (double time : deque) {
-                fileOutputStream.write(String.valueOf(time).getBytes());
-                fileOutputStream.write(" ".getBytes());
-            }
-            fileOutputStream.write("\n".getBytes());
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            return true;
-        }catch(Exception e){
-            e.printStackTrace();
         }
         return false;
     }

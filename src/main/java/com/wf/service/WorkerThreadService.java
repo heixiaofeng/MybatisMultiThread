@@ -12,7 +12,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class WorkerThreadService implements Runnable{
-    SqlSession sqlSession;
     private DMLCount dmlCount;
     private DMLTime dmlTime;
     private Student student;
@@ -41,23 +40,24 @@ public class WorkerThreadService implements Runnable{
 
     @Override
     public void run() {
-        sqlSession = DBUtils.getSession();
+        SqlSession sqlSession = DBUtils.getSession();
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
-        while(true){
+        while(true) {
+            double startTime = System.currentTimeMillis();
+            //每秒插入次数
+            studentMapper.saveStudent(student);
+            //单次操作时间
+            double endTime = System.currentTimeMillis();
+            double time = (endTime - startTime) / 1000;
             lock.lock();
             try {
                 //终止循环
                 System.out.println("thread name:" + Thread.currentThread().getName() + ", count:" + dmlCount.getCount());
-                if (dmlCount.getCount() == 1000)
+                if (dmlCount.getCount() == 100) {
                     break;
-                double startTime = System.currentTimeMillis();
-                //每秒插入次数
-                studentMapper.saveStudent(student);
+                }
                 sqlSession.commit();
                 dmlCount.addCount();
-                //单次操作时间
-                double endTime = System.currentTimeMillis();
-                double time = (endTime - startTime) / 1000;
                 dmlTime.addElement(time);
             } catch (Exception e){
                 e.printStackTrace();
