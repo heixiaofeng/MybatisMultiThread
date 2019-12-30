@@ -4,6 +4,7 @@ import com.wf.domain.DMLTime;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.util.Deque;
 
 public class LogThreadService implements Runnable{
@@ -20,7 +21,9 @@ public class LogThreadService implements Runnable{
         int size = deque.size();
         System.out.println("日志线程总数量:" + size);
         if (size > 0) {
-            File file = new File("src/main/resources/file/logThread.txt");
+            URL resource = this.getClass().getResource("logThread.txt");
+            String file1 = resource.getFile();
+            File file = new File(file1);
             try {
                 if (!file.exists()) {
                     file.createNewFile();

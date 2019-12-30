@@ -19,6 +19,7 @@ public final class DBUtils {
             sessionFactory = sqlSessionFactoryBuilder.build(resourceStream);
         } catch (IOException e) {
             e.printStackTrace();
+//            System.out.println(e.getCause()+"......."+e.getMessage());
         }
     }
 
