@@ -20,7 +20,7 @@ public class ThreadTest {
 
         //启动日志线程
         LogThreadService logThreadService = new LogThreadService(dmlTime);
-        scheduledExecutorService.scheduleAtFixedRate(logThreadService, 0, 2, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(logThreadService, 0, 1, TimeUnit.SECONDS);
         //启动统计线程
         CountThreadService countThreadService = new CountThreadService(dmlCount);
         scheduledExecutorService.scheduleAtFixedRate(countThreadService, 0, 1, TimeUnit.SECONDS);

@@ -43,15 +43,16 @@ public class WorkerThreadService implements Runnable{
             double startTime = System.currentTimeMillis();
             //每秒插入次数
             studentMapper.saveStudent(student);
-            sqlSession.commit();
-            if (dmlCount.getCount() == 10000) {
-                break;
-            }
             dmlCount.addCount();
-            //单次操作时间
-            double endTime = System.currentTimeMillis();
-            double time = (endTime - startTime) / 1000;
-            dmlTime.addElement(time);
+            if (dmlCount.getCount() <= 10000) {
+                sqlSession.commit();
+                //单次操作时间
+                double endTime = System.currentTimeMillis();
+                double time = (endTime - startTime) / 1000;
+                dmlTime.addElement(time);
+            } else {
+                dmlCount.cutCount();
+            }
         }
     }
 }
