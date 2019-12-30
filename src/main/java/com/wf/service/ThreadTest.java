@@ -26,7 +26,7 @@ public class ThreadTest {
         scheduledExecutorService.scheduleAtFixedRate(countThreadService, 0, 1, TimeUnit.SECONDS);
         //启动工作线程,同一个工作线程对象启动多次
         WorkerThreadService workerThreadService = new WorkerThreadService(dmlCount, dmlTime);
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             executorService.execute(workerThreadService);
         }
     }

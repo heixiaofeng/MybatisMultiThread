@@ -5,7 +5,6 @@ import com.wf.domain.DMLCount;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 
 public class CountThreadService implements Runnable{
 
@@ -22,9 +21,10 @@ public class CountThreadService implements Runnable{
         System.out.println("统计线程结果总数量：" + newCount);
         int data = newCount - oldCount;
         if (data > 0) {
-            URL resource = this.getClass().getResource("countThread.txt");
-            String file1 = resource.getFile();
-            File file = new File(file1);
+//            URL resource = this.getClass().getResource("countThread.txt");
+//            System.out.println("count resource:"+resource);
+//            String file1 = resource.getFile();
+            File file = new File("countThread.txt");
             try {
                 if (!file.exists()) {
                     file.createNewFile();
