@@ -50,7 +50,7 @@ public class WorkerThreadService implements Runnable{
                 sqlSession.commit();
                 //单次操作时间
                 double endTime = System.currentTimeMillis();
-                double time = (endTime - startTime) / 1000;
+                double time = endTime - startTime;
                 dmlTime.addElement(time);
             } else {
                 dmlCount.cutCount();
