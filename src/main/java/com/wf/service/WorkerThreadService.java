@@ -13,11 +13,13 @@ public class WorkerThreadService implements Runnable{
     private DMLCount dmlCount;
     private DMLTime dmlTime;
     private Student student;
+    private int operationCount;
 
 
-    public WorkerThreadService(DMLCount dmlCount, DMLTime dmlTime){
+    public WorkerThreadService(DMLCount dmlCount, DMLTime dmlTime, int operationCount) {
         this.dmlCount = dmlCount;
         this.dmlTime = dmlTime;
+        this.operationCount = operationCount;
 
         student = new Student();
         student.setsNumber(111111);
@@ -44,7 +46,7 @@ public class WorkerThreadService implements Runnable{
             //每秒插入次数
             studentMapper.saveStudent(student);
             dmlCount.addCount();
-            if (dmlCount.getCount() <= 10000) {
+            if (dmlCount.getCount() <= operationCount) {
                 sqlSession.commit();
                 //单次操作时间
                 double endTime = System.currentTimeMillis();

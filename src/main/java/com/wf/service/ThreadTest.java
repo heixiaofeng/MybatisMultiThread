@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class ThreadTest {
 
     public static void main(String[] args){
+        int threadCount = Integer.parseInt(args[0]);
+        int operationCount = Integer.parseInt(args[1]);
         DMLCount dmlCount = new DMLCount();
         DMLTime dmlTime = new DMLTime();
         //工作线程
@@ -25,8 +27,8 @@ public class ThreadTest {
         CountThreadService countThreadService = new CountThreadService(dmlCount);
         scheduledExecutorService.scheduleAtFixedRate(countThreadService, 0, 1, TimeUnit.SECONDS);
         //启动工作线程,同一个工作线程对象启动多次
-        WorkerThreadService workerThreadService = new WorkerThreadService(dmlCount, dmlTime);
-        for (int i = 0; i < 10; i++) {
+        WorkerThreadService workerThreadService = new WorkerThreadService(dmlCount, dmlTime, operationCount);
+        for (int i = 0; i < threadCount; i++) {
             executorService.execute(workerThreadService);
         }
     }
