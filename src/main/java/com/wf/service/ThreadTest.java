@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 public class ThreadTest {
 
     public static void main(String[] args){
-        int threadCount = Integer.parseInt(args[0]);
-        int operationCount = Integer.parseInt(args[1]);
+        int threadCount = 10;
+        int operationCount = 1000;
         DMLCount dmlCount = new DMLCount();
         DMLTime dmlTime = new DMLTime();
         //工作线程

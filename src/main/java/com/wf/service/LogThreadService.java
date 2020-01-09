@@ -20,10 +20,7 @@ public class LogThreadService implements Runnable{
         int size = deque.size();
         System.out.println("日志线程总数量:" + size);
         if (size > 0) {
-//            URL resource = this.getClass().getResource("logThread.txt");
-//            System.out.println("log resource:"+resource);
-//            String file1 = resource.getFile();
-            File file = new File("logThread.txt");
+            File file = new File("src/main/resources/file/logThread.txt");
             try {
                 if (!file.exists()) {
                     file.createNewFile();

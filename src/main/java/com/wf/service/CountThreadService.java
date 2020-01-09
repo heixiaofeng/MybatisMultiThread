@@ -21,10 +21,7 @@ public class CountThreadService implements Runnable{
         System.out.println("统计线程结果总数量：" + newCount);
         int data = newCount - oldCount;
         if (data > 0) {
-//            URL resource = this.getClass().getResource("countThread.txt");
-//            System.out.println("count resource:"+resource);
-//            String file1 = resource.getFile();
-            File file = new File("countThread.txt");
+            File file = new File("src/main/resources/file/countThread.txt");
             try {
                 if (!file.exists()) {
                     file.createNewFile();
